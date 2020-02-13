@@ -1,0 +1,62 @@
+startups <- read.csv(file.choose()) # choose the Cars.csv data set
+View(startups)
+summary(startups)
+str(startups)
+attach(startups)
+#dmy <- dummyVars("~ startups$State", data=startups, fullRank=T)
+sum(is.na(startups))
+pairs(startups)
+library(caret)
+dmy <- dummyVars(" ~ .", data = startups, fullRank=T)
+startups <- data.frame(predict(dmy, newdata = startups))
+#print(trsf)
+startups$State <- as.integer(as.factor(startups$State))
+str(startups)
+cor(startups)
+library(corpcor)
+cor2pcor(cor(startups))
+model1 <- lm(Profit~.,data=startups)
+summary(model1)
+mode2<-lm(Profit~Administration,data=startups)
+summary(mode2)
+mode3<-lm(Profit~Marketing.Spend,data=startups)
+summary(mode3) #significant
+mode4<-lm(Profit~State,data=startups)
+summary(mode4)
+mode5<-lm(Profit~Marketing.Spend+Administration,data=startups)
+summary(mode5)
+mode6<-lm(Profit~Marketing.Spend+State,data=startups)
+summary(mode6)
+mode7<-lm(Profit~Marketing.Spend+R.D.Spend ,data=startups)
+summary(mode7)
+mode9<-lm(Profit~R.D.Spend ,data=startups)
+summary(mode9)
+
+avPlots(model1,id.n=2,id.cex=0.7)
+cor(Administration,Profit)
+cor(Marketing.Spend,Profit)
+plot(Marketing.Spend,Profit)
+cor(exp(Marketing.Spend),Profit)
+plot(exp(Marketing.Spend),Profit)
+panel.cor<-function(x,y,digits=2,prefix="",cex.cor)
+{
+  usr<- par("usr"); on.exit(par(usr))
+  par(usr=c(0,1,0,1))
+  r=(cor(x,y))
+  txt<- format(c(r,0.123456789),digits=digits)[1]
+  txt<- paste(prefix,txt,sep="")
+  if(missing(cex.cor)) cex<-0.4/strwidth(txt)
+  text(0.5,0.5,txt,cex=cex)
+}
+pairs(startups,upper.panel = panel.cor,main="Scatter plot matrix with Correlation coefficients")
+influence.measures(model1)
+library(car)
+## plotting Influential measures 
+windows()
+influenceIndexPlot(mode7,id.n=3) # index plots for infuence measures
+influencePlot(mode7,id.n=3) # A user friendly representation of the above
+mode8<-lm(Profit~Marketing.Spend+R.D.Spend,data=startups[-50,-49])
+summary(mode8)
+mode8$coefficients
+mode8$residuals
+mean(mode8$residuals)

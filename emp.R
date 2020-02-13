@@ -1,0 +1,41 @@
+churn <- read.csv(file.choose())
+View(churn)
+attach(churn)
+#detach(weight)
+str(churn)
+summary(churn)
+plot(churn$Salary_hike, churn$Churn_out_rate)  # plot(X,Y)
+#install.packages("lattice")
+library(lattice)
+plot(churn)
+cor(churn)
+cor(Salary_hike^2,Churn_out_rate)
+sum(is.na(churn))
+library(moments)
+skewness(churn)
+hist(Churn_out_rate)
+hist(Salary_hike)
+boxplot(churn$Salary_hike,horizontal=T)
+boxplot(churn$Churn_out_rate,horizontal=T)
+qqnorm(churn$Salary_hike,main="Salary_hike")
+qqline(churn$Salary_hike)
+qqnorm(churn$Churn_out_rate,main="Churn_out_rate")
+qqline(churn$Churn_out_rate)
+reg <- lm(Churn_out_rate~(Salary_hike+I(Salary_hike*Salary_hike)))
+reg$fitted.values
+mean(reg$residuals)
+reg$coefficients
+summary(reg)
+sqrt(sum(reg$residuals^2)/nrow(churn))  #RMSE
+sqrt(mean(reg$residuals^2))
+library(ggplot2)
+ggplot(data=churn,aes(x=Salary_hike,y=Churn_out_rate))+geom_point(color='blue')+
+  geom_line(color='red',data=churn,aes(x=Salary_hike,y=reg$fitted.values))
+cor(log(Salary_hike),Churn_out_rate)
+reg1 <- lm(Churn_out_rate~log(Salary_hike))
+reg1$fitted.values
+mean(reg1$residuals)
+reg1$coefficients
+summary(reg1)
+sqrt(sum(reg1$residuals^2)/nrow(delivery))  #RMSE
+sqrt(mean(reg1$residuals^2))

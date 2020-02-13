@@ -1,0 +1,13 @@
+library(party)
+library(caret)
+library(caTools)
+split_tag<-sample.split(iris$Species,SplitRatio=0.7)
+train<-subset(iris,split_tag==T)
+test<-subset(iris,split_tag==F)
+tree<-ctree(Species~.,data=train)
+plot(tree)
+pred<-predict(tree,test,type="response")
+confusion<-table(test$Species,pred)
+confusion
+Acc<-sum(diag(confusion))/sum(confusion)
+Acc
